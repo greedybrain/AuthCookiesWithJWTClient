@@ -1,24 +1,35 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import axios from 'axios'
+import underscore from 'underscore'
+import EntryPage from './Pages/EntryPage/containers/EntryPage';
+import { helper } from './Utils/helper';
+import { Switch, Route } from 'react-router-dom';
 
 function App() {
+  const [userData, setUserData] = useState({})
+
+  const { baseUrl, loggedIn, login, logout } = helper.myEndpoints
+  const handleLogin = async (email, password) => {
+    try {
+      const response = await axios.post(
+        `${baseUrl}${login}`,
+        { email, password },
+        { withCredentials: true }
+      )
+      setUserData(response.data.user.data)
+    } catch(e) {
+      console.log(e)
+    }
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Switch>
+        <Route exact path='/login'>
+          <EntryPage handleLogin={handleLogin} />
+        </Route>
+      </Switch>
     </div>
   );
 }
