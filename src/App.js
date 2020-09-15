@@ -1,34 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import axios from 'axios'
 import underscore from 'underscore'
 import EntryPage from './Pages/EntryPage/containers/EntryPage';
 import { helper } from './Utils/helper';
 import { Switch, Route } from 'react-router-dom';
+import Home from './Pages/HomePage/containers/Home';
+import { useDispatch } from 'react-redux';
+import { checkLoginStatusThunk } from './Store/middleware/authUserMiddleware';
 
 function App() {
-  const [userData, setUserData] = useState({})
+  const dispatch = useDispatch()
 
-  const { baseUrl, loggedIn, login, logout } = helper.myEndpoints
-  const handleLogin = async (email, password) => {
-    try {
-      const response = await axios.post(
-        `${baseUrl}${login}`,
-        { email, password },
-        { withCredentials: true }
-      )
-      setUserData(response.data.user.data)
-    } catch(e) {
-      console.log(e)
-    }
-  }
+  // componendDidMount
+
+  useEffect(() => {
+    dispatch(checkLoginStatusThunk())
+  })
 
   return (
     <div className="App">
       <Switch>
-        <Route exact path='/login'>
-          <EntryPage handleLogin={handleLogin} />
-        </Route>
+        <Route 
+          exact 
+          path='/login'
+          render={ props => <EntryPage {...props} />}
+        /> 
+        <Route 
+          exact 
+          path="/"
+          render={props => <Home {...props} />}
+        />   
       </Switch>
     </div>
   );
