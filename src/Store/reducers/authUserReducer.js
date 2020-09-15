@@ -8,10 +8,11 @@ const initialState = {
 //! REDUCER
 export default function authUserReducer(state = initialState, action) {
         switch(action.type) {
-                case CHECK_LOGGED_IN_STATUS: 
+                case AUTO_LOGIN_USER:
                         return {
                                 ...state,
-                                loggedInStatus: false
+                                user: action.payload.userData,
+                                loggedInStatus: action.payload.loggedInStatus,
                         }
                 case LOGIN_USER:
                         return {
@@ -26,20 +27,28 @@ export default function authUserReducer(state = initialState, action) {
                                 passwordError: action.payload.passwordError,
                                 loggedInStatus: false,
                         }
+                case LOGOUT_USER:
+                        return {
+                                ...state,
+                                user: action.payload.userData,
+                                loggedInStatus: action.payload.loggedInStatus
+                        }
                 default:
                         return  state
         }
 }       
 
 //!TYPES
-const CHECK_LOGGED_IN_STATUS = "CHECK_LOGGED_IN_STATUS"
+const AUTO_LOGIN_USER = "AUTO_LOGIN_USER"
 const LOGIN_USER = "LOGIN_USER"
 const CATCH_FAILED_LOGIN_ERRORS = "CATCH_FAILED_LOGIN_ERRORS"
+const LOGOUT_USER = "LOGOUT_USER"
 
 //! ACTION CREATORS 
-export const checkLoggedInStatus = loggedInStatus => ({
-        type: CHECK_LOGGED_IN_STATUS,
+export const autoLoginUser = (userData, loggedInStatus) => ({
+        type: AUTO_LOGIN_USER,
         payload: {
+                userData,
                 loggedInStatus
         }
 })
@@ -56,6 +65,14 @@ export const catchFailedLoginErrors = (emailError, passwordError) => ({
         payload: {
                 emailError,
                 passwordError
+        }
+})
+
+export const logoutUser = (userData, loggedInStatus) => ({
+        type: LOGOUT_USER,
+        payload: {
+                userData,
+                loggedInStatus
         }
 })
 

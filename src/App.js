@@ -7,15 +7,13 @@ import { helper } from './Utils/helper';
 import { Switch, Route } from 'react-router-dom';
 import Home from './Pages/HomePage/containers/Home';
 import { useDispatch } from 'react-redux';
-import { checkLoginStatusThunk } from './Store/middleware/authUserMiddleware';
+import { autoLoginUserThunk } from './Store/middleware/authUserMiddleware';
 
 function App() {
   const dispatch = useDispatch()
 
-  // componendDidMount
-
   useEffect(() => {
-    dispatch(checkLoginStatusThunk())
+    dispatch(autoLoginUserThunk())
   })
 
   return (
