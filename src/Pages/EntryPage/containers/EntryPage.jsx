@@ -6,7 +6,7 @@ export default class EntryPage extends Component {
                 return (
                         <div className="entry_page">
                                 <div className="login_form">
-                                        <Login handleLogin={this.props.handleLogin} />
+                                        <Login history={this.props.history} />
                                 </div>
                                 <div className="signup_form">
 

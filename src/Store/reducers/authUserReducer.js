@@ -1,37 +1,39 @@
 const initialState = {
         user: {},
-        loggedInStatus: false,
-        emailError: '',
-        passwordError: ''
+        loggedIn: false,
+        error: '',
+        lastStatusCheck: null,
 }
 
 //! REDUCER
 export default function authUserReducer(state = initialState, action) {
         switch(action.type) {
-                case AUTO_LOGIN_USER:
+                case CHECK_USER_LOGGED_IN_STATUS:
                         return {
                                 ...state,
                                 user: action.payload.userData,
-                                loggedInStatus: action.payload.loggedInStatus,
+                                loggedIn: action.payload.loggedIn,
+                                lastStatusCheck: action.payload.lastStatusCheck
                         }
+                
                 case LOGIN_USER:
                         return {
                                 ...state,
                                 user: action.payload.userData,
-                                loggedInStatus: true
+                                loggedIn: true,
+                                lastStatusCheck: action.payload.lastStatusCheck
                         }
                 case CATCH_FAILED_LOGIN_ERRORS:
                         return {
                                 ...state,
-                                emailError: action.payload.emailError,
-                                passwordError: action.payload.passwordError,
-                                loggedInStatus: false,
+                                error: action.payload.error,
+                                loggedIn: false,
                         }
                 case LOGOUT_USER:
                         return {
                                 ...state,
                                 user: action.payload.userData,
-                                loggedInStatus: action.payload.loggedInStatus
+                                loggedIn: action.payload.loggedIn,
                         }
                 default:
                         return  state
@@ -39,40 +41,41 @@ export default function authUserReducer(state = initialState, action) {
 }       
 
 //!TYPES
-const AUTO_LOGIN_USER = "AUTO_LOGIN_USER"
+const CHECK_USER_LOGGED_IN_STATUS = "CHECK_USER_LOGGED_IN_STATUS"
 const LOGIN_USER = "LOGIN_USER"
 const CATCH_FAILED_LOGIN_ERRORS = "CATCH_FAILED_LOGIN_ERRORS"
 const LOGOUT_USER = "LOGOUT_USER"
 
 //! ACTION CREATORS 
-export const autoLoginUser = (userData, loggedInStatus) => ({
-        type: AUTO_LOGIN_USER,
+export const checkUserLoggedInStatus = (userData, loggedIn, lastStatusCheck) => ({
+        type: CHECK_USER_LOGGED_IN_STATUS,
         payload: {
                 userData,
-                loggedInStatus
+                loggedIn,
+                lastStatusCheck
         }
 })
 
-export const loginUser = userData => ({
+export const loginUser = (userData, lastStatusCheck) => ({
         type: LOGIN_USER,
         payload: {
-                userData
+                userData,
+                lastStatusCheck
         }
 })
 
-export const catchFailedLoginErrors = (emailError, passwordError) => ({
+export const catchFailedLoginErrors = error => ({
         type: CATCH_FAILED_LOGIN_ERRORS,
         payload: {
-                emailError,
-                passwordError
+                error
         }
 })
 
-export const logoutUser = (userData, loggedInStatus) => ({
+export const logoutUser = (userData, logged) => ({
         type: LOGOUT_USER,
         payload: {
                 userData,
-                loggedInStatus
+                logged
         }
 })
 

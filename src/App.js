@@ -1,37 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
-import axios from 'axios'
-import underscore from 'underscore'
-import EntryPage from './Pages/EntryPage/containers/EntryPage';
-import { helper } from './Utils/helper';
-import { Switch, Route } from 'react-router-dom';
-import Home from './Pages/HomePage/containers/Home';
-import { useDispatch } from 'react-redux';
-import { autoLoginUserThunk } from './Store/middleware/authUserMiddleware';
+import { connect, useDispatch } from 'react-redux';
+import { checkIfIdled, checkUserLoggedInStatusThunk, logoutUserThunk } from './Store/middleware/authUserMiddleware';
+import Routes from './Routes';
+import moment from 'moment'
 
-function App() {
+function App(props) {
   const dispatch = useDispatch()
 
+  
+  
   useEffect(() => {
-    dispatch(autoLoginUserThunk())
-  })
+    dispatch(checkUserLoggedInStatusThunk())
+    return () => {
+      clearInterval(setIdleTimer)
+    }
+  },)
+
+  const setIdleTimer = setInterval(() => {
+    dispatch(checkIfIdled())
+  }, 1000);
 
   return (
     <div className="App">
-      <Switch>
-        <Route 
-          exact 
-          path='/login'
-          render={ props => <EntryPage {...props} />}
-        /> 
-        <Route 
-          exact 
-          path="/"
-          render={props => <Home {...props} />}
-        />   
-      </Switch>
+      <Routes />
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    lastStatusCheckCheck: state.lastStatusCheck,
+    loggedIn: state.loggedIn
+  }
+}
+
+export default connect(mapStateToProps, null)(App);
